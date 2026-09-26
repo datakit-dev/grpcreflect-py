@@ -1,0 +1,31 @@
+[project]
+name = "grpcreflect-py"
+version = "0.1.0"
+description = "An idiomatic Python implementation of gRPC Server Reflection compatible with ConnectRPC"
+readme = "README.md"
+authors = [{ name = "Jordan Fowler", email = "jordan@withdatakit.com" }]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = ["connectrpc>=0.12.1", "protobuf-py>=0.5.0"]
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "buf-bin>=1.73.0",
+    "protoc-gen-connectrpc>=0.12.1",
+    "protoc-gen-py>=0.5.0",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pyvoy>=1.1.0",
+    "starlette>=1.6.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.uv.build-backend]
+module-name = ["grpcreflect"]

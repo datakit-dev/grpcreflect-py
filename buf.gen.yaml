@@ -1,0 +1,18 @@
+version: v2
+
+clean: true
+
+managed:
+  enabled: true
+
+inputs:
+  - module: buf.build/grpc/grpc:26635376b3f47a11126a0f4b4b5b6de7fe5a074a
+    types:
+      - grpc.reflection.v1.ServerReflection
+      - grpc.reflection.v1alpha.ServerReflection
+
+plugins:
+  - local: protoc-gen-py
+    out: src/grpcreflect/_gen
+  - local: protoc-gen-connectrpc
+    out: src/grpcreflect/_gen
