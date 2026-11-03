@@ -1,6 +1,6 @@
 [project]
 name = "grpcreflect-py"
-version = "0.1.0"
+version = "0.1.1"
 description = "An idiomatic Python implementation of gRPC Server Reflection compatible with ConnectRPC"
 readme = "README.md"
 authors = [{ name = "Jordan Fowler", email = "jordan@withdatakit.com" }]
@@ -16,7 +16,7 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "buf-bin>=1.73.0",
-    "protoc-gen-connectrpc>=0.12.1",
+    "protoc-gen-connectrpc>=0.13.0",
     "protoc-gen-py>=0.7.0",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
