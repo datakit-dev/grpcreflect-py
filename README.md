@@ -56,10 +56,12 @@ bidi-streaming tests, so it's the recommended way to serve `app` above:
 import asyncio
 import pyvoy
 
+
 async def main() -> None:
     server = pyvoy.PyvoyServer("myapp:app", port=8080)
     await server.start()
     await server.wait()
+
 
 asyncio.run(main())
 ```
