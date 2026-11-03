@@ -21,6 +21,7 @@ dev = [
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "pyvoy>=1.1.0",
+    "ruff>=0.17.3",
     "starlette>=1.6.0",
 ]
 
@@ -29,3 +30,10 @@ asyncio_mode = "auto"
 
 [tool.uv.build-backend]
 module-name = ["grpcreflect"]
+
+[tool.ruff]
+extend-exclude = ["src/grpcreflect/_gen"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "UP046"]

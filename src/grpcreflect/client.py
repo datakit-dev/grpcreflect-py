@@ -145,8 +145,12 @@ class ClientStream:
         return _SCHEMA_V1 if self._is_v1 else _SCHEMA_V1ALPHA
 
     def _open_stream(self) -> AsyncIterator[Any]:
-        client = self._client._v1_client if self._is_v1 else self._client._v1alpha_client  # noqa: SLF001
-        return client.server_reflection_info(self._iter_requests(), headers=self._headers)
+        client = (
+            self._client._v1_client if self._is_v1 else self._client._v1alpha_client
+        )  # noqa: SLF001
+        return client.server_reflection_info(
+            self._iter_requests(), headers=self._headers
+        )
 
     async def _iter_requests(self) -> AsyncIterator[Any]:
         while (request := await self._requests.get()) is not None:
@@ -159,7 +163,9 @@ class ClientStream:
         async with self._lock:
             while True:
                 schema = self._schema()
-                request = schema.request(host=self._host, message_request=message_request)
+                request = schema.request(
+                    host=self._host, message_request=message_request
+                )
                 try:
                     await self._requests.put(request)
                     response = await anext(self._responses)
@@ -172,7 +178,10 @@ class ClientStream:
                         continue
                     raise
                 message_response = response.message_response
-                if isinstance(message_response, Oneof) and message_response.field == "error_response":
+                if (
+                    isinstance(message_response, Oneof)
+                    and message_response.field == "error_response"
+                ):
                     error_response = message_response.value
                     code = _code_from_grpc_status(error_response.error_code)
                     raise ConnectError(code, error_response.error_message)
@@ -180,26 +189,43 @@ class ClientStream:
 
     async def list_services(self) -> list[str]:
         response = await self._send(Oneof(field="list_services", value=""))
-        return [service.name for service in _unwrap(response, "list_services_response").service]
+        return [
+            service.name
+            for service in _unwrap(response, "list_services_response").service
+        ]
 
     async def file_by_filename(self, name: str) -> list[FileDescriptorProto]:
         response = await self._send(Oneof(field="file_by_filename", value=name))
-        return _parse_file_descriptors(_unwrap(response, "file_descriptor_response").file_descriptor_proto)
+        return _parse_file_descriptors(
+            _unwrap(response, "file_descriptor_response").file_descriptor_proto
+        )
 
     async def file_containing_symbol(self, name: str) -> list[FileDescriptorProto]:
         response = await self._send(Oneof(field="file_containing_symbol", value=name))
-        return _parse_file_descriptors(_unwrap(response, "file_descriptor_response").file_descriptor_proto)
+        return _parse_file_descriptors(
+            _unwrap(response, "file_descriptor_response").file_descriptor_proto
+        )
 
-    async def file_containing_extension(self, containing_type: str, extension_number: int) -> list[FileDescriptorProto]:
+    async def file_containing_extension(
+        self, containing_type: str, extension_number: int
+    ) -> list[FileDescriptorProto]:
         extension_request = self._schema().extension_request(
             containing_type=containing_type, extension_number=extension_number
         )
-        response = await self._send(Oneof(field="file_containing_extension", value=extension_request))
-        return _parse_file_descriptors(_unwrap(response, "file_descriptor_response").file_descriptor_proto)
+        response = await self._send(
+            Oneof(field="file_containing_extension", value=extension_request)
+        )
+        return _parse_file_descriptors(
+            _unwrap(response, "file_descriptor_response").file_descriptor_proto
+        )
 
     async def all_extension_numbers_of_type(self, name: str) -> list[int]:
-        response = await self._send(Oneof(field="all_extension_numbers_of_type", value=name))
-        return list(_unwrap(response, "all_extension_numbers_response").extension_number)
+        response = await self._send(
+            Oneof(field="all_extension_numbers_of_type", value=name)
+        )
+        return list(
+            _unwrap(response, "all_extension_numbers_response").extension_number
+        )
 
     async def close(self) -> None:
         """Half-closes the stream, then drains it until the server signals EOF."""
@@ -230,10 +256,14 @@ class Client:
 
     def __init__(self, address: str, **client_options: Any) -> None:
         self._v1_client = _v1_connect.ServerReflectionClient(address, **client_options)
-        self._v1alpha_client = _v1alpha_connect.ServerReflectionClient(address, **client_options)
+        self._v1alpha_client = _v1alpha_connect.ServerReflectionClient(
+            address, **client_options
+        )
         self._v1_unimplemented = False
 
-    def new_stream(self, *, host: str = "", headers: Headers | None = None) -> ClientStream:
+    def new_stream(
+        self, *, host: str = "", headers: Headers | None = None
+    ) -> ClientStream:
         """Opens a new `ClientStream` for a sequence of reflection calls."""
         return ClientStream(self, host=host, headers=headers)
 

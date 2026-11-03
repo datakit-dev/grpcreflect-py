@@ -58,7 +58,9 @@ async def test_file_containing_symbol_resolves_real_upstream_file(address: str) 
 
 async def test_file_by_filename_round_trips(address: str) -> None:
     async with Client(address) as client, client.new_stream() as stream:
-        files = await stream.file_by_filename("grpc/reflection/v1alpha/reflection.proto")
+        files = await stream.file_by_filename(
+            "grpc/reflection/v1alpha/reflection.proto"
+        )
     assert [f.name for f in files] == ["grpc/reflection/v1alpha/reflection.proto"]
 
 

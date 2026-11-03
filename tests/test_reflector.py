@@ -20,7 +20,7 @@ from protobuf import Oneof, Registry
 from protobuf.wkt import FileDescriptorProto
 
 from grpcreflect._gen.grpc.reflection.v1 import reflection_pb as v1
-from grpcreflect.reflector import Reflector, ReflectionSchema
+from grpcreflect.reflector import ReflectionSchema, Reflector
 
 _SCHEMA = ReflectionSchema(
     response=v1.ServerReflectionResponse,
