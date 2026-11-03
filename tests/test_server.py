@@ -109,7 +109,9 @@ async def test_mount_reflection_handlers_registry_includes_mounted_service() -> 
 
     responses = [
         resp
-        async for resp in v1alpha_service.server_reflection_info(requests_v1alpha(), None)
+        async for resp in v1alpha_service.server_reflection_info(
+            requests_v1alpha(), None
+        )
     ]
     names = {service.name for service in responses[0].message_response.value.service}
     assert names == {

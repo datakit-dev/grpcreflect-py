@@ -20,7 +20,7 @@ from grpcreflect._gen.grpc.reflection.v1alpha import (
     reflection_connect as _v1alpha_connect,
 )
 from grpcreflect._gen.grpc.reflection.v1alpha import reflection_pb as _v1alpha_pb
-from grpcreflect.reflector import Reflector, ReflectionSchema, ReflectorOptions
+from grpcreflect.reflector import ReflectionSchema, Reflector, ReflectorOptions
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator, Iterable
