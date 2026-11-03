@@ -12,12 +12,18 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 
-import protobuf.wkt as wkt
 import pytest
 from connectrpc.code import Code
 from connectrpc.errors import ConnectError
 from protobuf import Oneof, Registry
 from protobuf.wkt import FileDescriptorProto
+from protobuf.wkt.google.protobuf import (
+    c_sharp_features_pb,
+    cpp_features_pb,
+    descriptor_pb,
+    go_features_pb,
+    java_features_pb,
+)
 
 from grpcreflect._gen.grpc.reflection.v1 import reflection_pb as v1
 from grpcreflect.reflector import ReflectionSchema, Reflector
@@ -107,7 +113,7 @@ async def test_file_containing_symbol_service() -> None:
 
 
 async def test_file_containing_symbol_enum() -> None:
-    reflector = Reflector(Registry(wkt.descriptor_pb.desc()), _SCHEMA)
+    reflector = Reflector(Registry(descriptor_pb.desc()), _SCHEMA)
     request = _request(field="file_containing_symbol", value="google.protobuf.Edition")
     response = await _one_response(reflector, request)
     assert _file_names(response) == ["google/protobuf/descriptor.proto"]
@@ -122,7 +128,7 @@ async def test_file_containing_symbol_not_found() -> None:
 
 
 async def test_file_containing_extension_found() -> None:
-    registry = Registry(wkt.go_features_pb.desc())
+    registry = Registry(go_features_pb.desc())
     reflector = Reflector(registry, _SCHEMA)
     extension_request = v1.ExtensionRequest(
         containing_type="google.protobuf.FeatureSet", extension_number=1002
@@ -149,10 +155,10 @@ async def test_file_containing_extension_not_found() -> None:
 
 async def test_all_extension_numbers_of_type_with_extensions() -> None:
     registry = Registry(
-        wkt.go_features_pb.desc(),
-        wkt.java_features_pb.desc(),
-        wkt.c_sharp_features_pb.desc(),
-        wkt.cpp_features_pb.desc(),
+        go_features_pb.desc(),
+        java_features_pb.desc(),
+        c_sharp_features_pb.desc(),
+        cpp_features_pb.desc(),
     )
     reflector = Reflector(registry, _SCHEMA)
     request = _request(
@@ -202,7 +208,7 @@ async def test_dependency_dedup_across_stream() -> None:
     - A dependency file already sent earlier in the stream is skipped on later requests.
     - The *root* file of a query is always sent, even if it was already sent as someone else's dependency earlier in the same stream.
     """
-    registry = Registry(wkt.go_features_pb.desc(), wkt.java_features_pb.desc())
+    registry = Registry(go_features_pb.desc(), java_features_pb.desc())
     reflector = Reflector(registry, _SCHEMA)
 
     go_extension = v1.ExtensionRequest(
